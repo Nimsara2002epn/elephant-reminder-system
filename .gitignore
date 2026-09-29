@@ -1,0 +1,40 @@
+# Maven build output
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local secrets — NEVER commit these
+application-local.properties
+application-secrets.properties
+.env
+*.env.local
+
+# Logs
+*.log
+logs/
+
+# Spring Boot packaged jars
+*.jar
+*.war
+
+# Node / npm (for elephant-frontend)
+elephant-frontend/node_modules/
+elephant-frontend/dist/
+elephant-frontend/.env.local
