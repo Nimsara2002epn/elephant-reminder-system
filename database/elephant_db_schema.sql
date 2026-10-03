@@ -1,13 +1,7 @@
--- ==========================================================
--- Elephant Smart Finance - Database Schema & Seed Data
--- Database: MySQL 8.0+
--- Group: 2026-Y2-S1-MLB-B11G2-03
--- ==========================================================
-
 CREATE DATABASE IF NOT EXISTS elephant_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE elephant_db;
 
--- 1. Users Table (Auth & Profile - Wickramasinghe E.P.N)
+-- 1. Users Table
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -17,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 2. Bills Table (Financial Obligations - Wickramasinghe E.P.N)
+--Bills Table
 CREATE TABLE IF NOT EXISTS bills (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -33,7 +27,7 @@ CREATE TABLE IF NOT EXISTS bills (
     CONSTRAINT fk_bills_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 3. Events Table (Event Lifecycle - Epa C.D.W)
+--Events Table
 CREATE TABLE IF NOT EXISTS events (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -48,7 +42,7 @@ CREATE TABLE IF NOT EXISTS events (
     CONSTRAINT fk_events_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 4. Reminders Table (Smart Reminders - Abilash M)
+--Reminders Table
 CREATE TABLE IF NOT EXISTS reminders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -65,7 +59,7 @@ CREATE TABLE IF NOT EXISTS reminders (
     CONSTRAINT fk_reminders_event FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- 5. Notifications Table (Alerts - Abilash M)
+--Notifications Table
 CREATE TABLE IF NOT EXISTS notifications (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -76,7 +70,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     CONSTRAINT fk_notifications_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 6. Shared Groups Table (Collaboration - Dissanayake D.M.M.S)
+--Shared Groups Table
 CREATE TABLE IF NOT EXISTS shared_groups (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -86,7 +80,7 @@ CREATE TABLE IF NOT EXISTS shared_groups (
     CONSTRAINT fk_groups_creator FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 7. Group Members Table (Collaboration - Dissanayake D.M.M.S)
+-- Group Members Table
 CREATE TABLE IF NOT EXISTS group_members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     group_id BIGINT NOT NULL,
@@ -97,7 +91,7 @@ CREATE TABLE IF NOT EXISTS group_members (
     CONSTRAINT fk_group_members_usr FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 8. Group Bills Table (Shared Expenses - Dissanayake D.M.M.S)
+--Group Bills Table
 CREATE TABLE IF NOT EXISTS group_bills (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     group_id BIGINT NOT NULL,
@@ -107,7 +101,7 @@ CREATE TABLE IF NOT EXISTS group_bills (
     CONSTRAINT fk_group_bills_bill FOREIGN KEY (bill_id) REFERENCES bills(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 9. Group Events Table (Shared Events - Dissanayake D.M.M.S)
+--Group Events Table
 CREATE TABLE IF NOT EXISTS group_events (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     group_id BIGINT NOT NULL,
@@ -116,7 +110,7 @@ CREATE TABLE IF NOT EXISTS group_events (
     CONSTRAINT fk_group_events_evt FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 10. Reports Table (Reports & Analytics - Sathsaranie R.M.N.K)
+--Reports Table
 CREATE TABLE IF NOT EXISTS reports (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -127,7 +121,7 @@ CREATE TABLE IF NOT EXISTS reports (
     CONSTRAINT fk_reports_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 11. User Feedback Table (User Feedback - Sathsaranie R.M.N.K)
+--User Feedback Table
 CREATE TABLE IF NOT EXISTS user_feedback (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -142,7 +136,7 @@ CREATE TABLE IF NOT EXISTS user_feedback (
     CONSTRAINT fk_user_feedback_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 12. Backups Table (Platform Security - Diyunuge S.M.L)
+--Backups Table
 CREATE TABLE IF NOT EXISTS backups (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     filename VARCHAR(255) NOT NULL,
@@ -152,7 +146,7 @@ CREATE TABLE IF NOT EXISTS backups (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 13. Security Logs Table (Platform Security - Diyunuge S.M.L)
+--Security Logs Table
 CREATE TABLE IF NOT EXISTS security_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
@@ -164,10 +158,7 @@ CREATE TABLE IF NOT EXISTS security_logs (
     CONSTRAINT fk_seclogs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- ==========================================================
--- Sample Seed Data
--- ==========================================================
-
+-- Sample Data
 INSERT INTO users (id, name, email, password, role) VALUES
 (1, 'Admin User', 'admin@elephant.com', '$2a$10$wT0uI74F9sB.QzD0yZq7.u8Q7t2G8.J1o4kR4L0C3E6P8F8J2H4Wq', 'ADMIN'),
 (2, 'Pasindu Wickramasinghe', 'pasindu@elephant.com', '$2a$10$wT0uI74F9sB.QzD0yZq7.u8Q7t2G8.J1o4kR4L0C3E6P8F8J2H4Wq', 'USER')
