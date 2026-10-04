@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS elephant_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE elephant_db;
 
--- 1. Users Table
+-- Users Table
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
