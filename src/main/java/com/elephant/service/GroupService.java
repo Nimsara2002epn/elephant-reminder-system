@@ -3,6 +3,7 @@ package com.elephant.service;
 import com.elephant.dto.MemberContributionDTO;
 import com.elephant.model.*;
 import com.elephant.repository.*;
+import com.elephant.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,6 +23,11 @@ public class GroupService {
     @Autowired private GroupBillRepository groupBillRepository;
     @Autowired private GroupEventRepository groupEventRepository;
     @Autowired private GroupActivityRepository groupActivityRepository;
+
+    @Autowired private BillSplitContext billSplitContext;
+    @Autowired private EqualSplitStrategy equalSplitStrategy;
+    @Autowired private PercentageSplitStrategy percentageSplitStrategy;
+    @Autowired private CustomAmountSplitStrategy customAmountSplitStrategy;
 
     public void logActivity(SharedGroup group, User user, String action) {
         GroupActivity activity = new GroupActivity();
@@ -203,4 +210,26 @@ public class GroupService {
 
         return dtoList;
     }
+
+    /**
+     * Splits a bill amount among group members using the Strategy Design Pattern.
+     * Allows dynamic switching between EQUAL, PERCENTAGE, and CUSTOM splitting algorithms at runtime.
+     *
+     * @param totalAmount  Total bill amount to split
+     * @param members      List of members participating in the group bill
+     * @param splitType    Strategy type ("EQUAL", "PERCENTAGE", "CUSTOM")
+     * @param customInputs Optional inputs for percentage or custom amounts
+     * @return Map of Member ID to their calculated contribution
+     */
+    public Map<Long, BigDecimal> splitBillAmount(BigDecimal totalAmount, List<User> members, String splitType, Map<Long, BigDecimal> customInputs) {
+        if ("PERCENTAGE".equalsIgnoreCase(splitType)) {
+            billSplitContext.setStrategy(percentageSplitStrategy);
+        } else if ("CUSTOM".equalsIgnoreCase(splitType)) {
+            billSplitContext.setStrategy(customAmountSplitStrategy);
+        } else {
+            billSplitContext.setStrategy(equalSplitStrategy);
+        }
+        return billSplitContext.executeStrategy(totalAmount, members, customInputs);
+    }
 }
+
