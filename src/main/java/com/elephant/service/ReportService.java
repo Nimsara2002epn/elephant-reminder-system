@@ -171,7 +171,11 @@ public class ReportService {
 
 
     public String generateFinancialReportContent(User user, LocalDate start, LocalDate end) {
-        List<Bill> bills = billRepository.findByUserOrderByDueDateAsc(user).stream()
+        List<Bill> userBills = billRepository.findByUserOrderByDueDateAsc(user);
+        List<Bill> bills = (userBills.isEmpty() && "ADMIN".equalsIgnoreCase(user.getRole()))
+                ? billRepository.findAll()
+                : userBills;
+        bills = bills.stream()
                 .filter(b -> (start == null || b.getDueDate() == null || !b.getDueDate().isBefore(start)) &&
                              (end   == null || b.getDueDate() == null || !b.getDueDate().isAfter(end)))
                 .toList();
@@ -227,7 +231,11 @@ public class ReportService {
     }
 
     public String generateFinancialCsvContent(User user, LocalDate start, LocalDate end) {
-        List<Bill> bills = billRepository.findByUserOrderByDueDateAsc(user).stream()
+        List<Bill> userBills = billRepository.findByUserOrderByDueDateAsc(user);
+        List<Bill> bills = (userBills.isEmpty() && "ADMIN".equalsIgnoreCase(user.getRole()))
+                ? billRepository.findAll()
+                : userBills;
+        bills = bills.stream()
                 .filter(b -> (start == null || b.getDueDate() == null || !b.getDueDate().isBefore(start)) &&
                              (end   == null || b.getDueDate() == null || !b.getDueDate().isAfter(end)))
                 .toList();
@@ -251,7 +259,11 @@ public class ReportService {
     }
 
     public String generateEventCsvContent(User user, LocalDate start, LocalDate end) {
-        List<Event> events = eventRepository.findByUserOrderByEventDateAsc(user).stream()
+        List<Event> userEvents = eventRepository.findByUserOrderByEventDateAsc(user);
+        List<Event> events = (userEvents.isEmpty() && "ADMIN".equalsIgnoreCase(user.getRole()))
+                ? eventRepository.findAll()
+                : userEvents;
+        events = events.stream()
                 .filter(e -> (start == null || e.getEventDate() == null || !e.getEventDate().isBefore(start)) &&
                              (end   == null || e.getEventDate() == null || !e.getEventDate().isAfter(end)))
                 .toList();

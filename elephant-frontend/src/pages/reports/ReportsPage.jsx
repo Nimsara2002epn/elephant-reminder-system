@@ -109,12 +109,17 @@ export const ReportsPage = () => {
 
   const isCsvContent = (report) => {
     if (!report || !report.content) return false;
-    return report.content.startsWith('ID,') || report.content.startsWith('"ID"') || report.title?.toLowerCase().includes('csv');
+    return (
+      report.content.startsWith('ID,') ||
+      report.content.startsWith('"ID"') ||
+      report.title?.toLowerCase().includes('csv') ||
+      (report.content.includes(',') && report.content.includes('\n'))
+    );
   };
 
-  const handleDownloadReport = (report) => {
+  const handleDownloadReport = (report, forceFormat) => {
     if (!report) return;
-    const isCsv = isCsvContent(report);
+    const isCsv = forceFormat === 'csv' || (!forceFormat && isCsvContent(report));
     const mimeType = isCsv ? 'text/csv;charset=utf-8' : 'text/plain;charset=utf-8';
     const ext = isCsv ? 'csv' : 'txt';
     const blob = new Blob([report.content || ''], { type: mimeType });
@@ -642,34 +647,50 @@ export const ReportsPage = () => {
               </div>
             </div>
 
-            <div style={{ padding: '16px 28px', backgroundColor: '#F8FAFD', borderTop: '1px solid #EEF3F8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <button
-                onClick={() => handleDownloadReport(viewingReport)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 16px',
-                  borderRadius: '9999px',
-                  backgroundColor: '#ffffff',
-                  border: isCsvContent(viewingReport) ? '1.5px solid #10B981' : '1.5px solid #E2EAF3',
-                  color: isCsvContent(viewingReport) ? '#059669' : '#2196F3',
-                  fontWeight: 700,
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                {isCsvContent(viewingReport) ? (
-                  <>
-                    <FileSpreadsheet size={14} color="#10B981" /> Download .csv
-                  </>
-                ) : (
-                  <>
-                    <Download size={14} /> Download .txt
-                  </>
-                )}
-              </button>
+            <div style={{ padding: '16px 28px', backgroundColor: '#F8FAFD', borderTop: '1px solid #EEF3F8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  onClick={() => handleDownloadReport(viewingReport, 'csv')}
+                  title="Download as CSV spreadsheet"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    backgroundColor: '#ECFDF5',
+                    border: '1.5px solid #10B981',
+                    color: '#059669',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <FileSpreadsheet size={14} color="#10B981" /> Download .csv
+                </button>
+
+                <button
+                  onClick={() => handleDownloadReport(viewingReport, 'txt')}
+                  title="Download as Text summary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 16px',
+                    borderRadius: '9999px',
+                    backgroundColor: '#ffffff',
+                    border: '1.5px solid #E2EAF3',
+                    color: '#2196F3',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <Download size={14} /> Download .txt
+                </button>
+              </div>
 
               <button
                 onClick={() => setViewingReport(null)}

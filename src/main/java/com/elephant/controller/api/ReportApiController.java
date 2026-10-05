@@ -71,8 +71,8 @@ public class ReportApiController {
 
         String format = (String) body.get("format");
         String content = (String) body.get("content");
+        boolean isCsv = "CSV".equalsIgnoreCase(format);
         if (content == null || content.isBlank()) {
-            boolean isCsv = "CSV".equalsIgnoreCase(format);
             if (report.getReportType() == Report.ReportType.EVENT) {
                 content = isCsv
                         ? reportService.generateEventCsvContent(user, report.getStartDate(), report.getEndDate())
@@ -82,6 +82,11 @@ public class ReportApiController {
                         ? reportService.generateFinancialCsvContent(user, report.getStartDate(), report.getEndDate())
                         : reportService.generateFinancialReportContent(user, report.getStartDate(), report.getEndDate());
             }
+        } else if (isCsv && !content.startsWith("ID,") && !content.startsWith("\"ID\"")) {
+            String csvData = (report.getReportType() == Report.ReportType.EVENT)
+                    ? reportService.generateEventCsvContent(user, report.getStartDate(), report.getEndDate())
+                    : reportService.generateFinancialCsvContent(user, report.getStartDate(), report.getEndDate());
+            content = csvData;
         }
         report.setContent(content);
         report.setUser(user);
