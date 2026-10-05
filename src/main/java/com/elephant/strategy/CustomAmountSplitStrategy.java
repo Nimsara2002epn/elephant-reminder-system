@@ -8,10 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Concrete Strategy: CustomAmountSplitStrategy
- * Assigns explicitly fixed contribution amounts to each individual member.
- */
+
 @Component("customAmountSplitStrategy")
 public class CustomAmountSplitStrategy implements BillSplitStrategy {
 

@@ -9,10 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Concrete Strategy: EqualSplitStrategy
- * Divides the total bill amount equally among all group members.
- */
+
 @Component("equalSplitStrategy")
 public class EqualSplitStrategy implements BillSplitStrategy {
 
@@ -30,7 +27,6 @@ public class EqualSplitStrategy implements BillSplitStrategy {
         BigDecimal totalAllocated = BigDecimal.ZERO;
         for (int i = 0; i < count; i++) {
             User user = members.get(i);
-            // Handle penny rounding difference on the last member to ensure total matches exactly
             if (i == count - 1) {
                 BigDecimal remaining = totalAmount.subtract(totalAllocated);
                 result.put(user.getId(), remaining);
